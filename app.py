@@ -248,15 +248,15 @@ def actualizar_usuario(id):
 # ----------------------------------------------------------------
 # ENDPOINTS
 # ----------------------------------------------------------------
-
 @app.route("/nueva_asistencia", methods=["POST"])
 @cross_origin()
 def insertar_asistencia():
     try:
-        fecha = request.json["fecha"]
-        estado = request.json["estado"]
-        id_preceptor = request.json["id_preceptor"]
-        id_alumno = request.json["id_alumno"]
+        datos = request.get_json(force=True)
+        fecha = datos["fecha"]
+        estado = datos["estado"]
+        id_preceptor = datos["id_preceptor"]
+        id_alumno = datos["id_alumno"]
 
         cursor = mysql.connection.cursor()
         sql = "INSERT INTO Asistencia(fecha, estado, preceptor_idpreceptor, Alumno_idAlumno) VALUES (%s, %s, %s, %s);"
@@ -266,14 +266,14 @@ def insertar_asistencia():
 
         return jsonify({"resultado": "Asistencia registrada correctamente"}), 201
     except Exception as e:
-        return jsonify({"error": f"Error en el registro: {str(e)}"}), 500
+        return jsonify({"error": f"Error en el registro de asistencia: {str(e)}"}), 500
 
 
 @app.route("/traer_asistencias", methods=["GET"])
 @cross_origin()
 def listar_asistencias():
     try:
-        sql = "SELECT a.idasistencia, a.fecha, a.estado, preceptor_idpreceptor, Alumno_idAlumno FROM Asistencia a"
+        sql = "SELECT idasistencia, fecha, estado, preceptor_idpreceptor, Alumno_idAlumno FROM Asistencia"
         cursor = mysql.connection.cursor()
         cursor.execute(sql)
         resultado = cursor.fetchall()
@@ -302,13 +302,15 @@ def listar_asistencias():
 @cross_origin()
 def insertar_preceptor():
     try:
-        nombre_usuario = request.json["nombre_usuario"]
-        email = request.json["email"]
-        contraseña = request.json["contraseña"]
+        datos = request.get_json(force=True)
+        nombre_usuario = datos["nombre_usuario"]
+        email = datos["email"]
+        # Cambiado a 'contrasena' para evitar conflictos con la 'ñ' en variables de Python
+        contrasena = datos["contraseña"] 
 
         cursor = mysql.connection.cursor()
         sql = "INSERT INTO Preceptor(nombre_usuario, email, contraseña) VALUES (%s, %s, %s);"
-        cursor.execute(sql, (nombre_usuario, email, contraseña))
+        cursor.execute(sql, (nombre_usuario, email, contrasena))
         mysql.connection.commit()
         cursor.close()
 
@@ -321,9 +323,10 @@ def insertar_preceptor():
 @cross_origin()
 def insertar_alumno():
     try:
-        nombre = request.json["nombre"]
-        apellido = request.json["apellido"]
-        Cursos_idCursos = request.json["Cursos_idCursos"]
+        datos = request.get_json(force=True)
+        nombre = datos["nombre"]
+        apellido = datos["apellido"]
+        Cursos_idCursos = datos["Cursos_idCursos"]
 
         cursor = mysql.connection.cursor()
         sql = "INSERT INTO Alumno(nombre, apellido, Cursos_idCursos) VALUES (%s, %s, %s);"
@@ -340,8 +343,9 @@ def insertar_alumno():
 @cross_origin()
 def aniadir_curso():
     try:
-        nombre_curso = request.json["nombre_curso"]
-        modalidad_idmodalidad = request.json["modalidad_idmodalidad"]
+        datos = request.get_json(force=True)
+        nombre_curso = datos["nombre_curso"]
+        modalidad_idmodalidad = datos["modalidad_idmodalidad"]
 
         cursor = mysql.connection.cursor()
         sql = "INSERT INTO Cursos(nombre_curso, modalidad_idmodalidad) VALUES (%s, %s);"
