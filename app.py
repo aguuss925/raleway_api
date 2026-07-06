@@ -245,128 +245,113 @@ def actualizar_usuario(id):
 # ================================
 # SECCIÓN: REGISTRO DE ASISTENCIA
 
-# Endpoint para registrar la asistencia de un usuario en un día en particular
+# ----------------------------------------------------------------
+# ENDPOINTS
+# ----------------------------------------------------------------
+
 @app.route("/nueva_asistencia", methods=["POST"])
 @cross_origin()
 def insertar_asistencia():
-    # Recibe el ID del usuario, la fecha (YYYY-MM-DD) y el estado (Presente/Ausente/Tarde)
-    
-    fecha = request.json["fecha"]
-    estado = request.json["estado"]
-    id_preceptor = request.json["id_preceptor"]
-    id_alumno = request.json["id_alumno"]
+    try:
+        fecha = request.json["fecha"]
+        estado = request.json["estado"]
+        id_preceptor = request.json["id_preceptor"]
+        id_alumno = request.json["id_alumno"]
 
-    cursor = mysql.connection.cursor()
-    
-    #SQL para insertar los datos en la tabla asistencias
-    sql = "INSERT INTO Asistencia(fecha, estado, preceptor_idpreceptor, Alumno_idAlumno) VALUES (%s, %s, %s, %s);"
-    cursor.execute(sql, (fecha, estado, id_preceptor, id_alumno))
-    
-    mysql.connection.commit()
-    cursor.close()
+        cursor = mysql.connection.cursor()
+        sql = "INSERT INTO Asistencia(fecha, estado, preceptor_idpreceptor, Alumno_idAlumno) VALUES (%s, %s, %s, %s);"
+        cursor.execute(sql, (fecha, estado, id_preceptor, id_alumno))
+        mysql.connection.commit()
+        cursor.close()
 
-    return jsonify({"resultado": "Asistencia registrada correctamente"})
+        return jsonify({"resultado": "Asistencia registrada correctamente"}), 201
+    except Exception as e:
+        return jsonify({"error": f"Error en el registro: {str(e)}"}), 500
 
 
-#endpoint para listar todo el historial de asistencias
 @app.route("/traer_asistencias", methods=["GET"])
 @cross_origin()
 def listar_asistencias():
-    # Usamos inner join para enlazar la tabla Asistencias con la tabla Usuarios
-    sql = """
-        SELECT a.idasistencia, a.fecha, a.estado, preceptor_idpreceptor, Alumno_idAlumno
-        FROM Asistencia a
-    """
+    try:
+        sql = "SELECT a.idasistencia, a.fecha, a.estado, preceptor_idpreceptor, Alumno_idAlumno FROM Asistencia a"
+        cursor = mysql.connection.cursor()
+        cursor.execute(sql)
+        resultado = cursor.fetchall()
+        cursor.close()
 
-    cursor = mysql.connection.cursor()
-    cursor.execute(sql)
-    resultado = cursor.fetchall()
-    cursor.close()
-
-    if not resultado:
-        return jsonify([])
-    else:
+        if not resultado:
+            return jsonify([])
+        
         asistencias = []
         for i in resultado:
-            fecha_str = i[1].strftime('%Y-%m-%d') if hasattr(i[1], 'strftime') else str(i[1])
-            
-            p = {
+            fecha_str = i[1].strftime('%Y-%m-%d %H:%M:%S') if hasattr(i[1], 'strftime') else str(i[1])
+            asistencias.append({
                 "id_asistencia": i[0],
                 "fecha": fecha_str,
                 "estado": i[2],
                 "id_preceptor": i[3],
-                "id_alumno":i[4]
-            }
-            asistencias.append(p)
+                "id_alumno": i[4]
+            })
             
-        return jsonify(asistencias)
+        return jsonify(asistencias), 200
+    except Exception as e:
+        return jsonify({"error": f"Error al listar: {str(e)}"}), 500
 
-#Preceptor
+
 @app.route("/preceptor", methods=["POST"])
 @cross_origin()
 def insertar_preceptor():
-    
-    
-    nombre_usuario = request.json["nombre_usuario"]
-    email = request.json["email"]
-    contraseña = request.json["contraseña"]
+    try:
+        nombre_usuario = request.json["nombre_usuario"]
+        email = request.json["email"]
+        contraseña = request.json["contraseña"]
 
-    cursor = mysql.connection.cursor()
-    
-    # SQL para insertar los datos en la tabla Asistencias
-    sql = "INSERT INTO Preceptor(nombre_usuario, email, contraseña) VALUES (%s, %s, %s);"
-    cursor.execute(sql, (nombre_usuario, email, contraseña))
-    
-    mysql.connection.commit()
-    cursor.close()
+        cursor = mysql.connection.cursor()
+        sql = "INSERT INTO Preceptor(nombre_usuario, email, contraseña) VALUES (%s, %s, %s);"
+        cursor.execute(sql, (nombre_usuario, email, contraseña))
+        mysql.connection.commit()
+        cursor.close()
 
-    return jsonify({"resultado": "Preceptor registrado correctamente"})
+        return jsonify({"resultado": "Preceptor registrado correctamente"}), 201
+    except Exception as e:
+        return jsonify({"error": f"Error al guardar preceptor: {str(e)}"}), 500
 
 
-
-#alumno
 @app.route("/alumno", methods=["POST"])
 @cross_origin()
 def insertar_alumno():
-    
-    
-    nombre = request.json["nombre"]
-    apellido = request.json["apellido"]
-    Cursos_idCursos = request.json["Cursos_idCursos"]
+    try:
+        nombre = request.json["nombre"]
+        apellido = request.json["apellido"]
+        Cursos_idCursos = request.json["Cursos_idCursos"]
 
-    cursor = mysql.connection.cursor()
-    
-    # SQL para insertar los datos en la tabla Asistencias
-    sql = "INSERT INTO Alumno(nombre, apellido, Cursos_idCursos) VALUES (%s, %s, %s);"
-    cursor.execute(sql, (nombre, apellido, Cursos_idCursos))
-    
-    mysql.connection.commit()
-    cursor.close()
+        cursor = mysql.connection.cursor()
+        sql = "INSERT INTO Alumno(nombre, apellido, Cursos_idCursos) VALUES (%s, %s, %s);"
+        cursor.execute(sql, (nombre, apellido, Cursos_idCursos))
+        mysql.connection.commit()
+        cursor.close()
 
-    return jsonify({"resultado": "Alumno registrado correctamente"})
+        return jsonify({"resultado": "Alumno registrado correctamente"}), 201
+    except Exception as e:
+        return jsonify({"error": f"Error al guardar alumno: {str(e)}"}), 500
 
 
-#Cursos
-#alumno
 @app.route("/curso", methods=["POST"])
 @cross_origin()
 def aniadir_curso():
-    
-    
-    nombre_curso = request.json["nombre_curso"]
-    modalidad_idmodalidad = request.json["modalidad_idmodalidad"]
+    try:
+        nombre_curso = request.json["nombre_curso"]
+        modalidad_idmodalidad = request.json["modalidad_idmodalidad"]
 
-    cursor = mysql.connection.cursor()
-    
-    # SQL para insertar los datos en la tabla Asistencias
-    sql = "INSERT INTO Cursos(nombre_curso, modalidad_idmodalidad) VALUES (%s, %s);"
-    cursor.execute(sql, (nombre_curso, modalidad_idmodalidad))
-    
-    mysql.connection.commit()
-    cursor.close()
+        cursor = mysql.connection.cursor()
+        sql = "INSERT INTO Cursos(nombre_curso, modalidad_idmodalidad) VALUES (%s, %s);"
+        cursor.execute(sql, (nombre_curso, modalidad_idmodalidad))
+        mysql.connection.commit()
+        cursor.close()
 
-    return jsonify({"resultado": "Curso agregado"})
-
+        return jsonify({"resultado": "Curso agregado"}), 201
+    except Exception as e:
+        return jsonify({"error": f"Error al agregar curso: {str(e)}"}), 500
 
 
 if __name__ == "__main__":

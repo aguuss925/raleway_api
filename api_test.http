@@ -1,4 +1,4 @@
-@URL = https://web-production-0f156.up.railway.app
+ @URL =  https://ralewayapi-production.up.railway.app
 
 ###
 # Obtener todos los usuarios
@@ -33,10 +33,8 @@ DELETE {{URL}}/eliminar_usuario/6
 GET {{URL}}/nueva_ruta
 
 #########################################
-@URL = 
 
-###
-# Obtener todos los usuarios
+# obtener todos los usuarios
 GET {{URL}}/traer_usuarios
 
 ###
@@ -64,23 +62,39 @@ Content-Type: application/json
 DELETE {{URL}}/eliminar_usuario/1
 
 
-### --- PRUEBAS DE ASISTENCIA ---
+##################################
 
 
-# Registrar una nueva asistencia (asumiendo que existe el usuario con id_usuario=1)
-###
-POST {{URL}}/nueva_asistencia
+###PRUEBAS DE ASISTENCIa
+
+
+### 1. CREAR CURSO
+# (Asegúrate de que la modalidad '1' exista previamente en tu BD)
+POST {{URL}}/curso
 Content-Type: application/json
 
 {
-    "fecha": "2026-06-24 07:55:00",
-    "estado": "Presente",
-    "id_preceptor": 1,
-    "id_alumno": 1
+    "nombre_curso": "7B",
+    "modalidad_idmodalidad": 1
 }
 
 ###
-#Preceptor :D
+
+### 2. CREAR ALUMNO
+# Usa el id de curso que corresponda (en este caso, 1)
+POST {{URL}}/alumno
+Content-Type: application/json
+
+{
+    "nombre": "Agustina",
+    "apellido": "Centeno",
+    "Cursos_idCursos": 1
+}
+
+###
+
+### 3. CREAR PRECEPTOR
+# Sin la coma al final de la contraseña para que el JSON sea válido
 POST {{URL}}/preceptor
 Content-Type: application/json
 
@@ -88,36 +102,23 @@ Content-Type: application/json
     "nombre_usuario": "bubu",
     "email": "bubu.gere@sagradoalcal.edu.ar",
     "contraseña": 12345
-
-    }
+}
 
 ###
-#Alumno :D
-POST {{URL}}/alumno
+
+### 4. REGISTRAR NUEVA ASISTENCIA
+# Ahora sí, vincula al alumno 1 y preceptor 1 creados arriba
+POST {{URL}}/nueva_asistencia
 Content-Type: application/json
 
 {
-    "nombre": "Belen",
-    "apellido": "Diaz",
-    "Cursos_idCursos": 1
-
-    }
-
-###
-#curso :D
-POST {{URL}}/curso
-Content-Type: application/json
-
-{
-    "nombre_curso": "7B",
-    "modalidad_idmodalidad": 1
-
-    }
-
+    "fecha": "2026-07-06 07:55:00",
+    "estado": "Presente",
+    "id_preceptor": 1,
+    "id_alumno": 1
+}
 
 ###
-# Obtener el historial de asistencias de todos los usuarios
+
+### 5. OBTENER HISTORIAL DE ASISTENCIAS
 GET {{URL}}/traer_asistencias
-ese
-:DS
-
