@@ -248,6 +248,23 @@ def actualizar_usuario(id):
 # ----------------------------------------------------------------
 # ENDPOINTS
 # ----------------------------------------------------------------
+@app.route("/modalidad", methods=["POST"])
+@cross_origin()
+def insertar_modalidad():
+    try:
+        datos = request.get_json(force=True)
+        nombre_modalidad = datos["nombre_modalidad"] # Ejemplo: "Técnica", "Bachiller"
+
+        cursor = mysql.connection.cursor()
+        sql = "INSERT INTO Modalidad(nombre_modalidad) VALUES (%s);" # Ajusta 'nombre_modalidad' al nombre real de tu columna
+        cursor.execute(sql, (nombre_modalidad,))
+        mysql.connection.commit()
+        cursor.close()
+
+        return jsonify({"resultado": "Modalidad agregada correctamente"}), 201
+    except Exception as e:
+        return jsonify({"error": f"Error al guardar modalidad: {str(e)}"}), 500
+    
 @app.route("/nueva_asistencia", methods=["POST"])
 @cross_origin()
 def insertar_asistencia():
