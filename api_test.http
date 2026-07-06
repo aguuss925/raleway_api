@@ -65,8 +65,7 @@ DELETE {{URL}}/eliminar_usuario/1
 ##################################
 
 
-###PRUEBAS DE ASISTENCIa
-### 0. CREAR MODALIDAD (Ejecutar primero que nada)
+#### 0. CREAR MODALIDAD
 POST {{URL}}/modalidad
 Content-Type: application/json
 
@@ -74,8 +73,9 @@ Content-Type: application/json
     "nombre_modalidad": "Programacion"
 }
 
+###
+
 ### 1. CREAR CURSO
-# (Asegúrate de que la modalidad '1' exista previamente en tu BD)
 POST {{URL}}/curso
 Content-Type: application/json
 
@@ -87,7 +87,6 @@ Content-Type: application/json
 ###
 
 ### 2. CREAR ALUMNO
-# Usa el id de curso que corresponda (en este caso, 1)
 POST {{URL}}/alumno
 Content-Type: application/json
 
@@ -100,7 +99,6 @@ Content-Type: application/json
 ###
 
 ### 3. CREAR PRECEPTOR
-# Sin la coma al final de la contraseña para que el JSON sea válido
 POST {{URL}}/preceptor
 Content-Type: application/json
 
@@ -113,7 +111,6 @@ Content-Type: application/json
 ###
 
 ### 4. REGISTRAR NUEVA ASISTENCIA
-# Ahora sí, vincula al alumno 1 y preceptor 1 creados arriba
 POST {{URL}}/nueva_asistencia
 Content-Type: application/json
 
