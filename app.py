@@ -373,6 +373,7 @@ def aniadir_curso():
         return jsonify({"resultado": "Curso agregado"}), 201
     except Exception as e:
         return jsonify({"error": f"Error al agregar curso: {str(e)}"}), 500
+    
 
 @app.route('/nueva_notificacion', methods=['POST'])
 def nueva_notificacion():
@@ -389,12 +390,7 @@ def nueva_notificacion():
     fecha = data.get('fecha')     # Puede ser None si no se envía ya que acepta NULL
     alumno_id = data.get('Alumno_idAlumno')
 
-    # Aquí iría tu consulta SQL para insertar en la base de datos, por ejemplo:
-    # cursor.execute(
-    #     "INSERT INTO Notificacion (titulo, mensaje, fecha, Alumno_idAlumno) VALUES (%s, %s, %s, %s)",
-    #     (titulo, mensaje, fecha, alumno_id)
-    # )
-    
+   
     return jsonify({
         "status": "Exito",
         "mensaje": "Notificacion registrada correctamente",
