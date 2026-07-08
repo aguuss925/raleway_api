@@ -397,7 +397,7 @@ def nueva_notificacion():
     
     return jsonify({
         "status": "Exito",
-        "mensaje": "Notificación registrada correctamente",
+        "mensaje": "Notificacion registrada correctamente",
         "datos_recibidos": {
             "titulo": titulo,
             "mensaje": mensaje,

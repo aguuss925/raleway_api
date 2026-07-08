@@ -122,14 +122,14 @@ Content-Type: application/json
 }
 
 ###
-5.AVISO DE ASISTENCIA
+### 5.AVISO DE ASISTENCIA
 POST {{URL}}/nueva_notificacion
 Content-Type: application/json
 
 {
     "titulo": "Aviso de Asistencia",
     "mensaje": "Se registro una falta el dia de hoy.",
-    "fecha": "2026-07-08 11:45:00",
+    "fecha": "2026-07-08 12:45:00",
     "Alumno_idAlumno": 1
 }
 
