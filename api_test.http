@@ -103,9 +103,9 @@ POST {{URL}}/preceptor
 Content-Type: application/json
 
 {
-    "nombre_usuario": "bubu",
-    "email": "bubu.gere@sagradoalcal.edu.ar",
-    "contraseña": 12345
+    "nombre_usuario": "Santiago",
+    "email": "santi.pro@sagradoalcal.edu.ar",
+    "contraseña": 12378
 }
 
 ###
@@ -116,12 +116,22 @@ Content-Type: application/json
 
 {
     "fecha": "2026-07-06 07:55:00",
-    "estado": "Presente",
+    "estado": 1,
     "id_preceptor": 1,
     "id_alumno": 1
 }
 
 ###
+5.AVISO DE ASISTENCIA
+POST {{URL}}/nueva_notificacion
+Content-Type: application/json
 
-### 5. OBTENER HISTORIAL DE ASISTENCIAS
+{
+    "titulo": "Aviso de Asistencia",
+    "mensaje": "Se registro una falta el dia de hoy.",
+    "fecha": "2026-07-08 11:45:00",
+    "Alumno_idAlumno": 1
+}
+
+### 6. OBTENER HISTORIAL DE ASISTENCIAS
 GET {{URL}}/traer_asistencias
