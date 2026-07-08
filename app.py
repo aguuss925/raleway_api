@@ -356,52 +356,38 @@ def insertar_alumno():
         return jsonify({"error": f"Error al guardar alumno: {str(e)}"}), 500
 
 
-@app.route("/curso", methods=["POST"])
-@cross_origin()
-def aniadir_curso():
-    try:
-        datos = request.get_json(force=True)
-        nombre_curso = datos["nombre_curso"]
-        modalidad_idmodalidad = datos["modalidad_idmodalidad"]
-
-        cursor = mysql.connection.cursor()
-        sql = "INSERT INTO Cursos(nombre_curso, modalidad_idmodalidad) VALUES (%s, %s);"
-        cursor.execute(sql, (nombre_curso, modalidad_idmodalidad))
-        mysql.connection.commit()
-        cursor.close()
-
-        return jsonify({"resultado": "Curso agregado"}), 201
-    except Exception as e:
-        return jsonify({"error": f"Error al agregar curso: {str(e)}"}), 500
-    
-
 @app.route('/nueva_notificacion', methods=['POST'])
 def nueva_notificacion():
     data = request.get_json()
     
-    # Validamos que vengan los datos obligatorios según tu estructura
-    # Alumno_idAlumno es NOT NULL (obligatorio)
-    if 'Alumno_idAlumno' not in data:
+    # Extraemos los datos del JSON
+    titulo = data.get('titulo')
+    mensaje = data.get('mensaje')
+    fecha = data.get('fecha')
+    Alumno_idAlumno = data.get('Alumno_idAlumno')
+    
+    # Validamos que el ID del alumno esté presente (ya que es NOT NULL)
+    if not Alumno_idAlumno:
         return jsonify({"error": "El campo 'Alumno_idAlumno' es obligatorio."}), 400
-        
-    # Extraemos los campos que coinciden con tu tabla
-    titulo = data.get('titulo')   # Puede ser None si no se envía ya que acepta NULL
-    mensaje = data.get('mensaje') # Puede ser None si no se envía ya que acepta NULL
-    fecha = data.get('fecha')     # Puede ser None si no se envía ya que acepta NULL
-    alumno_id = data.get('Alumno_idAlumno')
 
-   
-    return jsonify({
-        "status": "Exito",
-        "mensaje": "Notificacion registrada correctamente",
-        "datos_recibidos": {
-            "titulo": titulo,
-            "mensaje": mensaje,
-            "fecha": fecha,
-            "Alumno_idAlumno": alumno_id
-        }
-    }), 201
+    try:
+        # Creamos el cursor y ejecutamos la consulta igual que con tus Cursos
+        cursor = mysql.connection.cursor()
+        sql = "INSERT INTO Notificacion(titulo, mensaje, fecha, Alumno_idAlumno) VALUES (%s, %s, %s, %s);"
+        cursor.execute(sql, (titulo, mensaje, fecha, Alumno_idAlumno))
+        mysql.connection.commit()
+        cursor.close()
 
+        return jsonify({
+            "status": "Exito",
+            "mensaje": "Notificación guardada en la base de datos correctamente."
+        }), 201
+
+    except Exception as e:
+        return jsonify({
+            "error": f"Error al registrar la notificación: {str(e)}"
+        }), 500
+    
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))
     app.run(host="0.0.0.0", port=port)
